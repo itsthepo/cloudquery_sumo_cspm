@@ -2,20 +2,20 @@
 
 Hello, this repository of code was to establish a "POC" code/solution to CSPM for Sumo Logic to offer to our customers. This has a few dependecies that must be considered/acknowledged. 
 
-⋅⋅1. (Cloudquery)[https://www.cloudquery.io/docs] deployed into a cloud env (their preferred is AWS), they do have a lovely (TF)[https://github.com/cloudquery/terraform-aws-cloudquery] that can make this deployment very simple. I think when moving this to production we should look at it entirely being hosted in aws. For the sake of the POC, this was done mostly local to my mac with the exception of the database being hosted in AWS (RDS). This was a huge thank you to Chas Clawson who found cloudquery and provided it to the team to test! His research turned up this (link)[https://www.cloudquery.io/blog/open-source-cspm#step-1-install-or-deploy-cloudquery]: which was used to create this doc. 
+1. (Cloudquery)[https://www.cloudquery.io/docs] deployed into a cloud env (their preferred is AWS), they do have a lovely (TF)[https://github.com/cloudquery/terraform-aws-cloudquery] that can make this deployment very simple. I think when moving this to production we should look at it entirely being hosted in aws. For the sake of the POC, this was done mostly local to my mac with the exception of the database being hosted in AWS (RDS). This was a huge thank you to Chas Clawson who found cloudquery and provided it to the team to test! His research turned up this (link)[https://www.cloudquery.io/blog/open-source-cspm#step-1-install-or-deploy-cloudquery]: which was used to create this doc. 
 
-⋅⋅2. Sumo currently does NOT have a methodology to pull logs/data from a database very easily. However, we have DO have OTEL support at Sumo for a (postgresql reciever)[https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.62.0/receiver/postgresqlreceiver] BUT it currently only supports metrics. I am not sure if they will add that functionality but may be something we can use at a later data. Maybe this changes with out deployment of OTEL in the future but for right now this POC code leverages the ability to export the results from the DB table to a csv and then ingested into the sumologic via an installed collector looking at the direcotry. 
+2. Sumo currently does NOT have a methodology to pull logs/data from a database very easily. However, we have DO have OTEL support at Sumo for a (postgresql reciever)[https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.62.0/receiver/postgresqlreceiver] BUT it currently only supports metrics. I am not sure if they will add that functionality but may be something we can use at a later data. Maybe this changes with out deployment of OTEL in the future but for right now this POC code leverages the ability to export the results from the DB table to a csv and then ingested into the sumologic via an installed collector looking at the direcotry. 
 
 *Please note that the most likely sustainable 'go-live' route would be to leverage a hosted collector by posting the new file to the https endpoint on a re-occuring timeframe*
 
-⋅⋅3. A configured (AWS cli)[https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html]. If you need help setting up the aws cli, here is a quick (Getting started with the AWS CLI)[https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html]
+3. A configured (AWS cli)[https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html]. If you need help setting up the aws cli, here is a quick (Getting started with the AWS CLI)[https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html]
 
 # POC Code Walkthrough Steps
 
-⋅⋅1. Setup Cloudquery locally on your mac or device. Setup instructions can be found (here)[https://www.cloudquery.io/docs/quickstart]
+1. Setup Cloudquery locally on your mac or device. Setup instructions can be found (here)[https://www.cloudquery.io/docs/quickstart]
 
 
-⋅⋅2. Configure your input sources (i.e., what cloud provider your querying - see example below aws.yml). For more information or other examples of sources please see (here)[https://www.cloudquery.io/docs/plugins/sources]
+2. Configure your input sources (i.e., what cloud provider your querying - see example below aws.yml). For more information or other examples of sources please see (here)[https://www.cloudquery.io/docs/plugins/sources]
 
 ```yaml
 kind: source
@@ -37,7 +37,7 @@ spec:
 ```
 
 
-⋅⋅3. Configure your output sources (i.e., where is the list of configuration data going to be stored). In this example, you can see my configuration file points to an RDS database in AWS. For more information or a list of other destinations please see (here)[https://www.cloudquery.io/docs/plugins/destinations].
+3. Configure your output sources (i.e., where is the list of configuration data going to be stored). In this example, you can see my configuration file points to an RDS database in AWS. For more information or a list of other destinations please see (here)[https://www.cloudquery.io/docs/plugins/destinations].
 
 ```yaml
 kind: destination
@@ -72,7 +72,7 @@ spec:
     connection_string: "postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres?sslmode=disable"
 ```
 
-⋅⋅4. Now that we have staged our source and destination files, we need to tell cloudquery to 'sync'. Run the command below, where you have cloudquery installed. 
+4. Now that we have staged our source and destination files, we need to tell cloudquery to 'sync'. Run the command below, where you have cloudquery installed. 
 
 ```bash
 cloudquery sync aws.yml postgressql.yml
@@ -84,7 +84,7 @@ Example:
 ## This section is the most important part is HOW we tie all of the configuration data together into whether or not the customer is compliant!
 
 
-⋅⋅5. We will now be executing the OOTB plugins/scripts that cloudquery provides to track state change for the customers resources. 
+5. We will now be executing the OOTB plugins/scripts that cloudquery provides to track state change for the customers resources. 
 
 *Note this can be done either locally (with connection to remote DB) or this can be done in the eks cluster that was deployed with the TF automation.*
 
@@ -97,10 +97,10 @@ psql postgres://postgres:pass@localhost:5432/postgres -f policy.sql
 ```
 *If you would like to see all of the potentially policy options, please navigate (here)[https://www.cloudquery.io/docs/core-concepts/policies]*
 
-⋅⋅6. The results from the *policy.sql* you just ran are then stored in the database under a table called *aws_policy_results* to which we can query the results for either through a script or a database connection. Currently, Sumo does NOT have a way to pull from databases but if we did, then our integration would be very similar to (Grafana's)[https://github.com/cloudquery/cq-provider-aws/tree/main/dashboards]. 
+6. The results from the *policy.sql* you just ran are then stored in the database under a table called *aws_policy_results* to which we can query the results for either through a script or a database connection. Currently, Sumo does NOT have a way to pull from databases but if we did, then our integration would be very similar to (Grafana's)[https://github.com/cloudquery/cq-provider-aws/tree/main/dashboards]. 
 
 
-⋅⋅7. Due to Sumo not having a database connector, we have to query the data via the command below and OUTPUT the results to a csv file that can then be ingested into Sumo. 
+7. Due to Sumo not having a database connector, we have to query the data via the command below and OUTPUT the results to a csv file that can then be ingested into Sumo. 
 
 ```
 psql postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres -c "select * from aws_policy_results" --csv > cis_v1.5.csv
@@ -109,7 +109,7 @@ psql postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres -c "select * from aw
 *I have attached an example of the raw CSV output (here)[/cloudquery_sumo_cspm/results/example_cis_v1.5.csv]
 
 
-⋅⋅8. This step is now get this data into Sumo Logic so we can start reporting on these and give our customers insights into their infrastruce and modern app security. 
+8. This step is now get this data into Sumo Logic so we can start reporting on these and give our customers insights into their infrastruce and modern app security. 
 
 *For this POC I used an installed collector but this could be easily done with a hosted collector*
 
