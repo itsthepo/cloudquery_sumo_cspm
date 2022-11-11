@@ -78,6 +78,7 @@ spec:
 cloudquery sync aws.yml postgressql.yml
 ```
 Example: 
+
 ![alt text](/screenshots/cloudquery_execute.png)
 
 
@@ -116,18 +117,20 @@ psql postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres -c "select * from aw
 - Create your source to grab the csv: 
 
 Example:
+
 ![alt text](/screenshots/local_file_source.png)
 
 - We can now see our data in sumo: 
+
 ![alt text](/screenshots/data_in_sumo.png)
 
 
 - Query / Begin to parse the data in Sumo:
-Example:
+
 ![alt text](/screenshots/query_parse_data.png)
 
-
 - An example (quick albiet) dashboard for CISv1.5: 
+
 ![alt text](/screenshots/example_CIS_Framework_Dashboard.png)
 
 
