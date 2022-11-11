@@ -1,4 +1,4 @@
-# Introduction
+# Introduction this is a walk through of Cloudquery w/AWS + Sumo for CSPM
 
 Hello, this repository of code was to establish a "POC" code/solution to CSPM for Sumo Logic to offer to our customers. This has a few dependecies that must be considered/acknowledged. 
 
