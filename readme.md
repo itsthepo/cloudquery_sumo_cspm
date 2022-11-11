@@ -6,7 +6,7 @@ Hello, this repository of code was to establish a "POC" code/solution to CSPM fo
 
 2. Sumo currently does NOT have a methodology to pull logs/data from a database very easily. However, we have DO have OTEL support at Sumo for a (postgresql reciever)[https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.62.0/receiver/postgresqlreceiver] BUT it currently only supports metrics. I am not sure if they will add that functionality but may be something we can use at a later data. Maybe this changes with out deployment of OTEL in the future but for right now this POC code leverages the ability to export the results from the DB table to a csv and then ingested into the sumologic via an installed collector looking at the direcotry. 
 
-*Please note that the most likely sustainable 'go-live' route would be to leverage a hosted collector by posting the new file to the https endpoint on a re-occuring timeframe*
+    *Please note that the most likely sustainable 'go-live' route would be to leverage a hosted collector by posting the new file to the https endpoint on a re-occuring timeframe*
 
 3. A configured (AWS cli)[https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html]. If you need help setting up the aws cli, here is a quick (Getting started with the AWS CLI)[https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html]
 
@@ -78,7 +78,7 @@ spec:
 cloudquery sync aws.yml postgressql.yml
 ```
 Example: 
-![alt text](/cloudquery_sumo_cspm/screenshots/cloudquery_execute.png)
+![alt text](/screenshots/cloudquery_execute.png)
 
 
 ## This section is the most important part is HOW we tie all of the configuration data together into whether or not the customer is compliant!
@@ -116,19 +116,19 @@ psql postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres -c "select * from aw
 - Create your source to grab the csv: 
 
 Example:
-![alt text](/cloudquery_sumo_cspm/screenshots/local_file_source.png)
+![alt text](/screenshots/local_file_source.png)
 
 - We can now see our data in sumo: 
-![alt text](/cloudquery_sumo_cspm/screenshots/data_in_sumo.png)
+![alt text](/screenshots/data_in_sumo.png)
 
 
 - Query / Begin to parse the data in Sumo:
 Example:
-![alt text](/cloudquery_sumo_cspm/screenshots/query_parse_data.png)
+![alt text](/screenshots/query_parse_data.png)
 
 
 - An example (quick albiet) dashboard for CISv1.5: 
-![alt text](/cloudquery_sumo_cspm/screenshots/example_CIS_Framework_Dashboard.png)
+![alt text](/screenshots/example_CIS_Framework_Dashboard.png)
 
 
 *If we wanted to do additional things like inventory with the data, this can be easy as well leveraging the work grafana already did (here)[https://github.com/cloudquery/cq-provider-aws/blob/main/dashboards/grafana/aws_asset_inventory.json] by leveraging their DB queries since they used the default installation as well!*
