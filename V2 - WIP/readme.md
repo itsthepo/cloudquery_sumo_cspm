@@ -11,7 +11,8 @@
     ``` 
     cd terraform-aws-rds/examples
     ```
-    - *If you need to update your configuration (i.e., change default instances size, please change line for "[instance_class](*will insert link*)" )
+    - *If you need to update your configuration (i.e., change default instances size, please change line for "[instance_class](*will insert link*)" to a [supported instance type](https://aws.amazon.com/rds/instance-types/). I did **db.m6g.large**)*
+
     - Deploy the configuration 
     ```terraform
     terraform init
@@ -19,4 +20,3 @@
     terraform apply
     ```
 
-    
