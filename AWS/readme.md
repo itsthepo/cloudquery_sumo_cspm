@@ -4,7 +4,7 @@ Hello, this repository of code was to establish a "POC" code/solution to CSPM fo
 
 1. [Cloudquery](https://www.cloudquery.io/docs) deployed into a cloud env (their preferred is AWS), they do have a lovely [TF](https://github.com/cloudquery/terraform-aws-cloudquery) that can make this deployment very simple. I think when moving this to production we should look at it entirely being hosted in aws. For the sake of the POC, this was done mostly local to my mac with the exception of the database being hosted in AWS (RDS). This was a huge thank you to Chas Clawson who found cloudquery and provided it to the team to test! His research turned up this [link](https://www.cloudquery.io/blog/open-source-cspm#step-1-install-or-deploy-cloudquery): which was used to create this doc. 
 
-2. Sumo currently does NOT have a methodology to pull logs/data from a database very easily. However, we have DO have OTEL support at Sumo for a [postgresql reciever](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.62.0/receiver/postgresqlreceiver) BUT it currently only supports metrics. I am not sure if they will add that functionality but may be something we can use at a later data. Maybe this changes with out deployment of OTEL in the future but for right now this POC code leverages the ability to export the results from the DB table to a csv and then ingested into the sumologic via an installed collector looking at the direcotry. 
+2. Sumo currently does NOT have a methodology to pull logs/data from a database very easily. However, we have DO have OTEL support at Sumo for a [postgresql reciever](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.62.0/receiver/postgresqlreceiver) BUT it currently only supports metrics. I am not sure if they will add that functionality but may be something we can use at a later date. Maybe this changes with out deployment of OTEL in the future but for right now this POC code leverages the ability to export the results from the DB table to a csv and then ingested into the sumologic via an installed collector looking at the direcotry. 
 
     *Please note that the most likely sustainable 'go-live' route would be to leverage a hosted collector by posting the new file to the https endpoint on a re-occuring timeframe*
 
@@ -82,7 +82,7 @@ Example:
 ![alt text](/AWS/screenshots/cloudquery_execute.png)
 
 
-## This section is the most important part is HOW we tie all of the configuration data together into whether or not the customer is compliant!
+## This section is how we correlate all the configuration and policy data together. The results of this highlight if the customer is compliant/non-compliant.
 
 
 5. We will now be executing the OOTB plugins/scripts that cloudquery provides to track state change for the customers resources. 
@@ -101,7 +101,7 @@ psql postgres://postgres:pass@localhost:5432/postgres -f policy.sql
 6. The results from the *policy.sql* you just ran are then stored in the database under a table called *aws_policy_results* to which we can query the results for either through a script or a database connection. Currently, Sumo does NOT have a way to pull from databases but if we did, then our integration would be very similar to [Grafana's](https://github.com/cloudquery/cq-provider-aws/tree/main/dashboards). 
 
 
-7. Due to Sumo not having a database connector, we have to query the data via the command below and OUTPUT the results to a csv file that can then be ingested into Sumo. 
+7. Due to Sumo not having a database connector, we have to query the data via the command below and output the results to a csv file that can then be ingested into Sumo. 
 
 ```
 psql postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres -c "select * from aws_policy_results" --csv > cis_v1.5.csv
@@ -110,7 +110,7 @@ psql postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres -c "select * from aw
 *I have attached an example of the raw CSV output [here](/AWS/results/example_cis_v1.5.csv)
 
 
-8. This step is now get this data into Sumo Logic so we can start reporting on these and give our customers insights into their infrastruce and modern app security. 
+8. Now get this data into Sumo!
 
 *For this POC I used an installed collector but this could be easily done with a hosted collector*
 
@@ -134,7 +134,7 @@ Example:
 ![alt text](/AWS/screenshots/example_CIS_Framework_Dashboard.png)
 
 
-*If we wanted to do additional things like inventory with the data, this can be easy as well leveraging the work grafana already did [here](https://github.com/cloudquery/cq-provider-aws/blob/main/dashboards/grafana/aws_asset_inventory.json) by leveraging their DB queries since they used the default installation as well!*
+*If we wanted to do additional things like inventory with the data, this can be easy as well leveraging the work grafana already did [here](https://github.com/cloudquery/cq-provider-aws/blob/main/dashboards/grafana/aws_asset_inventory.json) by leveraging their DB queries since they used the default installation.*
 
 
 ## Thank you for taking the time to review this POC code and I hope that we can get this into Sumo quickly!

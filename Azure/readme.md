@@ -76,7 +76,7 @@ Example:
 ![alt text](/Azure/screenshots/cloudquery_execute.png)
 
 
-## This section is the most important part is HOW we tie all of the configuration data together into whether or not the customer is compliant!  
+## This section is how we correlate all the configuration and policy data together. The results of this highlight if the customer is compliant/non-compliant.
 
 
 5. We will now be executing the OOTB plugins/scripts that cloudquery provides to track state change for the customers resources. 
@@ -94,7 +94,7 @@ psql postgres://postgres:pass@localhost:5432/postgres -f policy.sql
 
 6. The results from the *policy.sql* you just ran are then stored in the database under a table called *azure_policy_results* to which we can query the results for either through a script or a database connection. Currently, Sumo does NOT have a way to pull from databases. 
 
-7. Due to Sumo not having a database connector, we have to query the data via the command below and OUTPUT the results to a csv file that can then be ingested into Sumo. 
+7. Due to Sumo not having a database connector, we have to query the data via the command below and output the results to a csv file that can then be ingested into Sumo. 
 
 ```
 psql postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres -c "select * from azure_policy_results" --csv > hipaa_hitrust_v9.2.csv
@@ -103,7 +103,7 @@ psql postgres://$user:$PASSWORD@$RDS_HOSTNAME:5432/postgres -c "select * from az
 *I have attached an example of the raw CSV output [here](/Azure/results/hipaa_hitrust_v9.2.csv)
 
 
-8. This step is now get this data into Sumo Logic so we can start reporting on these and give our customers insights into their infrastruce and modern app security. 
+8.  Now get this data into Sumo! 
 
 *For this POC I used an installed collector but this could be easily done with a hosted collector*
 
@@ -122,7 +122,7 @@ Example:
 
 ![alt text](/Azure/screenshots/query_parse_data.png)
 
-- An example (quick albiet) dashboard for CISv1.5: 
+- An example (quick albiet) dashboard for HIPAA Hi-Trust: 
 
 ![alt text](/Azure/screenshots/example_HIPAA_Hi-trust.png)
 
